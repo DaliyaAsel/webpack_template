@@ -39,5 +39,20 @@ npm install --save-dev webpack-dev-server
 npm install @babel/core @babel/preset-env babel-loader --save-dev
 ```
 ```
+npm install --save-dev webpack-merge
+```
+```
+npm install --save-dev copy-webpack-plugin
+```
+```
+npm install vue --save
+```
+```
+npm install vue-style-loader vue-loader vue-template-compiler --save-dev
+```
+```
+npm install vuex --save
+```
+```
 npm start , для запуска проекта
 ```
