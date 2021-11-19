@@ -15,14 +15,16 @@
 
             <div class="content-wrapper">
                 <!-- expamle section (remove me) -->
-                <section id="promo" style="text-align:center;">
+                <section id="promo">
                     <div class="container">
-                        <h1>Webpack Template Ex</h1>
+                        <h1>Webpack</h1>
+                        <img src="/assets/img/1.png" alt="">
+                        <button @click="component = !component">Show vue component</button>
                     </div>
                 </section>
 
                 <!-- expamle vue component -->
-                
+                <example-component v-if="component"></example-component>
             </div>
 
             <footer></footer>
