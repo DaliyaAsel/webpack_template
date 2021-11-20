@@ -6,43 +6,62 @@ const {
 } = require('clean-webpack-plugin');
 
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const {
+    VueLoaderPlugin
+} = require('vue-loader')
 
 const PATHS = {
     src: path.join(__dirname, '../src'),
     dist: path.join(__dirname, '../dist'),
     assets: 'assets/'
 }
-const {
-    VueLoaderPlugin
-} = require('vue-loader')
+
 
 module.exports = {
     externals: {
         paths: PATHS
     },
-    entry: PATHS.src,
+    entry: {
+        app: PATHS.src
+    },
     output: {
+        filename: `${PATHS.assets}js/[name].[contenthash].js`,
         path: PATHS.dist,
-        filename: `${PATHS.assets}js/[name].js`,
         publicPath: '/'
     },
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    name: 'vendors',
+                    test: /node_modules/,
+                    chunks: 'all',
+                    enforce: true
+                }
+            }
+        }
+    },
     plugins: [new HtmlWebpackPlugin({
-            hash: false,
             template: `${PATHS.src}/index.html`,
-            filename: './index.html'
+            filename: './index.html',
+            // inject: false
         }),
         new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
-            filename: `${PATHS.assets}css/[name].css`
+            filename: `${PATHS.assets}css/[name].[contenthash].css`
         }),
         new CopyWebpackPlugin({
             patterns: [{
-                    from: `${PATHS.src}/img`,
-                    to: `${PATHS.assets}/img`
+                    from: `${PATHS.src}/${PATHS.assets}img`,
+                    to: `${PATHS.assets}img`
+                },
+                {
+                    from: `${PATHS.src}/${PATHS.assets}fonts`,
+                    to: `${PATHS.assets}fonts`
                 },
                 {
                     from: `${PATHS.src}/static`,
-                    to: '``'
+                    to: 'etc'
                 },
             ],
         }),
@@ -67,7 +86,7 @@ module.exports = {
                             sourceMap: true,
                             postcssOptions: {
                                 plugins: [
-                                    require.resolve("../src/js/postcss.config"),
+                                    require.resolve("../postcss.config"),
                                 ],
                             },
                         },
@@ -89,7 +108,7 @@ module.exports = {
                             sourceMap: true,
                             postcssOptions: {
                                 plugins: [
-                                    require.resolve("../src/js/postcss.config"),
+                                    require.resolve("../postcss.config"),
                                 ],
                             },
                         },
@@ -103,6 +122,14 @@ module.exports = {
             },
             {
                 test: /\.(png|jpe?g|gif|svg)$/i,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]'
+                }
+
+            },
+            {
+                test: /\.(ttf|otf|eot|woff|woff2)$/,
                 loader: 'file-loader',
                 options: {
                     name: '[name].[ext]'
@@ -130,9 +157,10 @@ module.exports = {
             }
         ],
     },
-    resolve : {
+    resolve: {
         alias: {
-            'vue$': 'vue/dist/vue.js'
+            '~':'src',
+            'vue$': 'vue/dist/vue.js'      
         }
     },
 };
